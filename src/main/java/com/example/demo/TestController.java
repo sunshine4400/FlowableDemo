@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
@@ -27,6 +29,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("flowable")
+@Api(tags="flowable测试")
 public class TestController {
 
     @Autowired
@@ -49,6 +52,7 @@ public class TestController {
      * @return
      */
     @GetMapping("add")
+    @ApiOperation(value = "创建流程",notes = "创建流程")
     public String addExpense(String userId, String days, String reason) {
         Map<String, Object> map = new HashMap<>();
         map.put("employee", userId);
@@ -221,6 +225,7 @@ public class TestController {
      * @param processId
      * @throws Exception
      */
+    @ApiOperation(value = "查询流程图",notes = "查询流程图")
     @RequestMapping(value = "processDiagram")
     public void genProcessDiagram(HttpServletResponse httpServletResponse, String processId) throws Exception {
         ProcessInstance pi = runtimeService.createProcessInstanceQuery().processInstanceId(processId).singleResult();
