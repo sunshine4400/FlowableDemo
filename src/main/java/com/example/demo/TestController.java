@@ -23,10 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author pyj
- * @date 2019/10/30
- */
+
 @RestController
 @RequestMapping("flowable")
 @Api(tags="flowable测试")
@@ -70,6 +67,7 @@ public class TestController {
      * @return
      */
     @GetMapping("list")
+    @ApiOperation(value = "获取指定用户组流程任务列表",notes = "获取指定用户组流程任务列表")
     public Object list(String group) {
         List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup(group).list();
         return tasks.toString();
@@ -83,6 +81,7 @@ public class TestController {
      * @return
      */
     @GetMapping("apply")
+    @ApiOperation(value = "通过/拒绝任务",notes = "通过/拒绝任务")
     public String apply(String taskId, String approved) {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (task == null) {
@@ -103,6 +102,7 @@ public class TestController {
      * @return
      */
     @GetMapping("historyList")
+    @ApiOperation(value = "查看历史流程记录",notes = "查看历史流程记录")
     public Object getHistoryList(String processInstanceId) {
         List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery()
                 .processInstanceId(processInstanceId).finished().orderByHistoricActivityInstanceEndTime().asc().list();
@@ -118,6 +118,7 @@ public class TestController {
      * @return
      */
     @GetMapping("rollbask")
+    @ApiOperation(value = "驳回流程实例",notes = "驳回流程实例")
     public String rollbaskTask(String taskId, String targetTaskKey) {
         Task currentTask = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (currentTask == null) {
@@ -140,6 +141,8 @@ public class TestController {
      *
      * @param processInstanceId
      */
+    @GetMapping("deleteProcessInstanceById")
+    @ApiOperation(value = "终止流程实例",notes = "终止流程实例")
     public String deleteProcessInstanceById(String processInstanceId) {
         // ""这个参数本来可以写删除原因
         runtimeService.deleteProcessInstance(processInstanceId, "");
@@ -153,6 +156,7 @@ public class TestController {
      * @param processInstanceId 当前流程实例id
      */
     @GetMapping("hangUp")
+    @ApiOperation(value = "挂起流程实例",notes = "挂起流程实例")
     public String handUpProcessInstance(String processInstanceId) {
         runtimeService.suspendProcessInstanceById(processInstanceId);
         return "挂起流程成功...";
@@ -164,6 +168,7 @@ public class TestController {
      * @param processInstanceId 流程实例id
      */
     @GetMapping("recovery")
+    @ApiOperation(value = "恢复（唤醒）被挂起的流程实例",notes = "恢复（唤醒）被挂起的流程实例")
     public String activateProcessInstance(String processInstanceId) {
         runtimeService.activateProcessInstanceById(processInstanceId);
         return "恢复流程成功...";
@@ -177,6 +182,7 @@ public class TestController {
      * @return
      */
     @GetMapping("isExist/running")
+    @ApiOperation(value = "判断传入流程实例在运行中是否存在",notes = "判断传入流程实例在运行中是否存在")
     public Boolean isExistProcIntRunning(String processInstanceId) {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
         if (processInstance == null) {
@@ -191,6 +197,7 @@ public class TestController {
      * @return
      */
     @GetMapping("isExist/history")
+    @ApiOperation(value = "判断流程实例在历史记录中是否存在",notes = "判断流程实例在历史记录中是否存在")
     public Boolean isExistProcInHistory(String processInstanceId) {
         HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
         if (historicProcessInstance == null) {
@@ -207,6 +214,7 @@ public class TestController {
      * @return 流程实例列表
      */
     @GetMapping("myTasks")
+    @ApiOperation(value = "我发起的流程实例列表",notes = "我发起的流程实例列表")
     public List<HistoricProcessInstance> getMyStartProcint(String userId) {
         List<HistoricProcessInstance> list = historyService
                 .createHistoricProcessInstanceQuery()
@@ -220,12 +228,11 @@ public class TestController {
 
     /**
      * 查询流程图
-     *
+     *http://localhost:9001/flowable/processDiagram?processId=5059
      * @param httpServletResponse
      * @param processId
      * @throws Exception
      */
-    @ApiOperation(value = "查询流程图",notes = "查询流程图")
     @RequestMapping(value = "processDiagram")
     public void genProcessDiagram(HttpServletResponse httpServletResponse, String processId) throws Exception {
         ProcessInstance pi = runtimeService.createProcessInstanceQuery().processInstanceId(processId).singleResult();
