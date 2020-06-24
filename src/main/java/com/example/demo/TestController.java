@@ -3,6 +3,8 @@ package com.example.demo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.dmn.api.DmnRepositoryService;
+import org.flowable.dmn.api.DmnRuleService;
 import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.history.HistoricProcessInstance;
@@ -39,6 +41,12 @@ public class TestController {
     private RepositoryService repositoryService;
     @Autowired
     private ProcessEngine processEngine;
+    @Autowired
+    private DmnRuleService dmnRuleService;
+
+    @Autowired
+    private DmnRepositoryService dmnRepositoryService;
+
 
     /**
      * 创建流程
